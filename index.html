@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/all.min.css">
+    <title>Weather-App</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <form action="" name="form">
+                <input type="text" placeholder="Enter City Name...." class="input"> <button name="button"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+        <div class="header-description">
+            <div class="header-content"> Today's Weather </div>
+            <div class="date" style="margin-bottom: 5px;"> Friday, 10 January 2021 </div>
+            <div class="time" style="display: inline;"></div>
+        </div>
+        <div class="weather-details loading">
+            <div class="celcius"> <span></span>°c</div>
+            <img src="" alt="" class="icon">
+            <div class="weather-condition"> Weather condition: </div>
+            <div class="temperature"> Temparature: </div>
+            <div class="humidity"> Humidity: </div>
+            <div class="wind"> Wind: </div>
+            <div class="pressure"> Pressure: </div>
+        </div>
+    </div>
+    <script>
+        const checkCity = async function(city) {
+
+            const apiKey = '77b57c1363372e191f0a6f230eb87d2c';
+            const apiCall = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+
+            const response = await fetch(apiCall);
+            var data = await response.json();
+            //console.log(data);
+            return data;
+        }
+
+        //checkCity("Osogbo")
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+            form.button.addEventListener("click", function() {
+                var inputValue = document.querySelector(".input").value.trim();
+                //console.log(inputValue);
+                checkCity(inputValue).then((data) => {
+                    //console.log(data);
+                    if (inputValue == "") {
+                        alert("Please, enter a city name!");
+                        const val = document.querySelector(".header-content");
+                        val.innerHTML = "Today's Weather";
+                        document.querySelector(".weather-details").classList.add("loading");
+                    } else {
+                        const val = document.querySelector(".header-content");
+                        const temp = document.querySelector(".celcius span");
+                        const weatherCondition = document.querySelector(".weather-condition");
+                        const temperature = document.querySelector(".temperature");
+                        const humidity = document.querySelector(".humidity");
+                        const wind = document.querySelector(".wind");
+                        const pressure = document.querySelector(".pressure");
+                        const icon = document.querySelector(".icon");
+
+                        val.innerHTML = "Today's Weather In " + data.name;
+                        temp.innerHTML = Math.round(data.main.temp);
+                        weatherCondition.innerHTML = "Weather condition: " + data.weather[0].description;
+                        temperature.innerHTML = `Temparature: ${Math.round(data.main.temp)}°c`;
+                        humidity.innerHTML = `Humidity: ${data.main.humidity}%`;
+                        wind.innerHTML = `Wind: ${data.wind.speed}Km/h`;
+                        pressure.innerHTML = `Pressure: ${data.main.pressure}hPa`;
+                        icon.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+                        icon.style.marginLeft = "30px";
+
+                        document.querySelector(".weather-details").classList.remove("loading");
+                    }
+
+                }).catch((error) => {
+                    //console.error(error);
+                    alert("Oops! You entered wrong city.");
+                    const val = document.querySelector(".header-content");
+                    val.innerHTML = "Today's Weather";
+                    document.querySelector(".weather-details").classList.add("loading");
+                });
+            })
+
+        })
+        var d = new Date();
+        var days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        var years = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        document.querySelector(".date").innerHTML = days[d.getDay()] + ", " + d.getDate() + " " + years[d.getMonth()] +
+            " " + d.getFullYear();
+
+        setInterval(todayDate, 1000);
+
+        var t = new Date();
+        if (t.getHours() >= 0 && t.getHours() < 12) {
+            setInterval(todayDate, 1000);
+
+            function todayDate() {
+                var t = new Date();
+                document.querySelector(".time").innerHTML = t.getHours() + ":" + t.getMinutes() + ":" + t.getSeconds() + " AM";
+            }
+        } else {
+            setInterval(todayDate, 1000);
+
+            function todayDate() {
+                var t = new Date();
+                document.querySelector(".time").innerHTML = t.getHours() + ":" + t.getMinutes() + ":" + t.getSeconds() + " PM";
+            }
+        }
+    </script>
+</body>
+
+</html>
