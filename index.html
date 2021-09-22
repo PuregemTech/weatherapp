@@ -36,7 +36,7 @@
         const checkCity = async function(city) {
 
             const apiKey = '77b57c1363372e191f0a6f230eb87d2c';
-            const apiCall = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+            const apiCall = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
 
             const response = await fetch(apiCall);
             var data = await response.json();
